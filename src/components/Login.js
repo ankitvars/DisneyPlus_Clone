@@ -1,10 +1,8 @@
 import styled from "styled-components";
-import Header from "./Header";
 
 const Login = (props) => {
   return (
     <Container>
-      <Header />
       <Content>
         <CTA>
           <CTALogoOne src="/images/cta-logo-one.svg" alt="" />
@@ -73,19 +71,19 @@ const CTALogoOne = styled.img`
 `;
 
 const SignUp = styled.a`
- font-weight: bold;
- background-color: #0063e5;
- margin-bottom: 12px;
- width: 100%;
- letter-spacing: 1.5px;
- font-size: 18px;
- padding: 16.5px 0;
- border:1px solid transparent;
- border-radius: 4px;
+  font-weight: bold;
+  background-color: #0063e5;
+  margin-bottom: 12px;
+  width: 100%;
+  letter-spacing: 1.5px;
+  font-size: 18px;
+  padding: 16.5px 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
 
- &:hover{
-  background-color: #0483ee;
- }
+  &:hover {
+    background-color: #0483ee;
+  }
 `;
 
 const CTALogoTwo = styled.img`
@@ -98,12 +96,11 @@ const CTALogoTwo = styled.img`
 `;
 
 const Description = styled.p`
-  color: hsla(0, 0%, 95.3% ,1);
+  color: hsla(0, 0%, 95.3%, 1);
   font-size: 11px;
   margin: 0 0 24px;
   line-height: 1.5;
   letter-spacing: 1.5px;
 `;
-
 
 export default Login;
