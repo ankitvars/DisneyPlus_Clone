@@ -1,10 +1,20 @@
-
+import { BrowserRouter as Router,Routes,Route } from 'react-router-dom';
 import './App.css';
+import Header from './components/Header';
+import Login from './components/Login';
+
 
 function App() {
   return (
     <div className="App">
-      <h1> DISNEY CLONE</h1>
+      <Router>
+        <Routes>
+          <Route path='/' element={
+            <Login />
+          }
+          />
+        </Routes>
+      </Router>
     </div>
   );
 }
