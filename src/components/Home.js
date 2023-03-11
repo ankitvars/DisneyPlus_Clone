@@ -22,7 +22,6 @@ const Home = (props) => {
   let trending = [];
 
   useEffect(() => {
-    console.log("hello");
     const unsub = onSnapshot(movieRef, (snapshot) => {
       snapshot.forEach((doc) => {
         switch (doc.data().type) {
@@ -52,7 +51,7 @@ const Home = (props) => {
           trending: trending,
         })
       );
-      console.log(recommends , "⭐");
+      // console.log(recommends , "🥤");
     });
 
     return () => {
