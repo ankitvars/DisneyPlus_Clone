@@ -2,13 +2,16 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setUserLoginDetails,
+  setSignOutState,
   selectUserName,
   selectUserPhoto,
 } from "../features/user/userSlice";
 import { provider } from "../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useInsertionEffect } from "react";
 
 const Header = (props) => {
   const dispatch = useDispatch();
@@ -16,23 +19,41 @@ const Header = (props) => {
   const userName = useSelector(selectUserName);
   const userAvatar = useSelector(selectUserPhoto);
 
-  const handleAuth = () => {
-    firebase
-      .auth()
-      .signInWithPopup(provider)
-      .then(function (result) {
-        // This gives you a Google Access Token.
-        // var token = result.credential.accessToken;
-        // // The signed-in user info.
-        // console.log(token);
-        // var user = result.user;
-        // console.log(user);
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        navigate("/home");
+      }
+    });
+  }, [userName]);
 
-        setUser(result.user);
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+  const handleAuth = () => {
+    if (!userName) {
+      auth
+        .signInWithPopup(provider)
+        .then(function (result) {
+          // This gives you a Google Access Token.
+          // var token = result.credential.accessToken;
+          // // The signed-in user info.
+          // console.log(token);
+          // var user = result.user;
+          // console.log(user);
+
+          setUser(result.user);
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    } else if (userName) {
+      auth
+        .signOut()
+        .then(() => {
+          dispatch(setSignOutState());
+          navigate("/");
+        })
+        .catch((err) => alert(err.message));
+    }
   };
 
   const setUser = (user) => {
@@ -50,39 +71,44 @@ const Header = (props) => {
       <Logo>
         <img src="/images/logo.svg" alt="" />
       </Logo>
-      {
-        !userName ?
-          <Login onClick={handleAuth}> Login </Login>
-          : <>
-            <NavList>
-              <a href="/home">
-                <img src="/images/home-icon.svg" alt="HOME" />
-                <span>HOME</span>
-              </a>
-              <a href="/">
-                <img src="/images/search-icon.svg" alt="HOME" />
-                <span>SEARCH</span>
-              </a>
-              <a href="/">
-                <img src="/images/WATCHLIST-icon.svg" alt="HOME" />
-                <span>WATCHLIST</span>
-              </a>
-              <a href="/">
-                <img src="/images/original-icon.svg" alt="HOME" />
-                <span>ORIGINALS</span>
-              </a>
-              <a href="/">
-                <img src="/images/movie-icon.svg" alt="HOME" />
-                <span>MOVIES</span>
-              </a>
-              <a href="/">
-                <img src="/images/series-icon.svg" alt="HOME" />
-                <span>SERIES</span>
-              </a>
-            </NavList>
+      {!userName ? (
+        <Login onClick={handleAuth}> Login </Login>
+      ) : (
+        <>
+          <NavList>
+            <a href="/home">
+              <img src="/images/home-icon.svg" alt="HOME" />
+              <span>HOME</span>
+            </a>
+            <a href="/">
+              <img src="/images/search-icon.svg" alt="HOME" />
+              <span>SEARCH</span>
+            </a>
+            <a href="/">
+              <img src="/images/WATCHLIST-icon.svg" alt="HOME" />
+              <span>WATCHLIST</span>
+            </a>
+            <a href="/">
+              <img src="/images/original-icon.svg" alt="HOME" />
+              <span>ORIGINALS</span>
+            </a>
+            <a href="/">
+              <img src="/images/movie-icon.svg" alt="HOME" />
+              <span>MOVIES</span>
+            </a>
+            <a href="/">
+              <img src="/images/series-icon.svg" alt="HOME" />
+              <span>SERIES</span>
+            </a>
+          </NavList>
+          <LogOut>
             <UserAvatar src={userAvatar} alt={userName} />
-          </>
-      }
+            <DropDown>
+              <span onClick={handleAuth}>Sign out</span>
+            </DropDown>
+          </LogOut>
+        </>
+      )}
     </Nav>
   );
 };
@@ -176,9 +202,9 @@ const NavList = styled.div`
     }
   }
 
-  /* @media (max-width: 768px) {
+  @media (max-width: 768px) {
     display: none;
-  } */
+  }
 `;
 
 const Login = styled.div`
@@ -199,7 +225,44 @@ const Login = styled.div`
 
 const UserAvatar = styled.img`
   height: 100%;
+`;
 
+const DropDown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0px;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 50%) 0px 0px 18px 0px;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  width: 100px;
+  opacity: 0;
+`;
+
+const LogOut = styled.div`
+  position: relative;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+
+  ${UserAvatar} {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover {
+    ${DropDown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
+  }
 `;
 
 export default Header;
