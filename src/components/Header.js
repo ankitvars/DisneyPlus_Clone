@@ -7,10 +7,8 @@ import {
   selectUserPhoto,
 } from "../features/user/userSlice";
 import { provider } from "../firebase";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useInsertionEffect } from "react";
 
 const Header = (props) => {
@@ -69,7 +67,9 @@ const Header = (props) => {
   return (
     <Nav>
       <Logo>
-        <img src="/images/logo.svg" alt="" />
+        <Link to="/">
+          <img src="/images/logo.svg" alt="" />
+        </Link>
       </Logo>
       {!userName ? (
         <Login onClick={handleAuth}> Login </Login>
