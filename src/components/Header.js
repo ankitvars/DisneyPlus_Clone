@@ -85,7 +85,7 @@ const Header = (props) => {
               <span>SEARCH</span>
             </a>
             <a href="/">
-              <img src="/images/WATCHLIST-icon.svg" alt="HOME" />
+              <img src="/images/watchlist-icon.svg" alt="HOME" />
               <span>WATCHLIST</span>
             </a>
             <a href="/">
